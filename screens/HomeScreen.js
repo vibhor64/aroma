@@ -9,14 +9,7 @@ import { useFonts } from 'expo-font';
 const { width, height } = Dimensions.get("screen");
 
 export default function HomeScreen() {
-    // Load fonts
-    let [fontsLoaded] = useFonts({
-        'Italiana': require('../assets/fonts/Italiana.ttf'),
-    });
-
-    if (!fontsLoaded) {
-        return null;
-    }
+    
 
     // State to hold the users data
     const [users, setUsers] = useState(usersArray);
@@ -112,6 +105,15 @@ export default function HomeScreen() {
         }).start(removeTopCard);
 
     }, [removeTopCard, swipe.x]);
+
+    // Load fonts
+    let [fontsLoaded] = useFonts({
+        'Italiana': require('../assets/fonts/Italiana.ttf'),
+    });
+
+    if (!fontsLoaded) {
+        return null;
+    }
 
     return (
         <SafeAreaView style={{ flex: 1 }}>

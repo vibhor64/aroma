@@ -13,6 +13,7 @@
     "@expo-google-fonts/poppins": "^0.2.3",
     "@react-navigation/native": "^6.1.10",
     "@react-navigation/native-stack": "^6.9.18",
+    "crypto": "^1.0.1",
     "expo": "~50.0.7",
     "expo-app-loading": "^2.1.1",
     "expo-font": "~11.10.3",
