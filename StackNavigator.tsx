@@ -5,26 +5,80 @@ import { HomeStackNavigatorParamList } from './my-app';
 import LoginScreen from './screens//login/LoginScreen';
 import { isSignedIn } from './utils/Store';
 import { useRecoilState } from 'recoil';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import ProfileScreen from './screens/ProfileScreen';
+import { Image, View } from 'react-native';
+import PremiumScreen from './screens/PremiumScreen';
+import LikeScreen from './screens/LikeScreen';
+import ChatScreen from './screens/ChatScreen';
 
 const Stack = createNativeStackNavigator<HomeStackNavigatorParamList>();
+const Tab = createBottomTabNavigator<HomeStackNavigatorParamList>();
 
 export default function StackNavigator() {
-  const [SignedIn, setSignedIn] = useRecoilState(isSignedIn);
+    const [SignedIn, setSignedIn] = useRecoilState(isSignedIn);
 
-  return (
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+    return (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+            {SignedIn ? (
+                <Stack.Screen name="Main">
+                    {() => (
+                        <Tab.Navigator initialRouteName='Home'
+                            screenOptions={{
+                                headerShown: false, tabBarShowLabel: false, tabBarStyle: {
+                                    position: 'absolute',
+                                    bottom: 28,
+                                    left: 10,
+                                    right: 10,
+                                    height: 70,
+                                    borderRadius: 30,
+                                    backgroundColor: '#000'
+                                }
+                            }}>
 
-        {SignedIn ? (
-          <>
-          <Stack.Group>
-            <Stack.Screen name="Home" component={HomeScreen} />
-          </Stack.Group>
-          </>
-        ) : (
-          <>
-            <Stack.Screen name="Login" component={LoginScreen} />
-          </>
-        )}
-      </Stack.Navigator>
-  )
+                            {/* Tab Screens */}
+
+                            <Tab.Screen name="Profile" component={ProfileScreen} options={{
+                                tabBarIcon: ({focused}) => (
+                                    <View>
+                                        <Image source={require('./assets/icons/user.png')} style={{ width: 28, height: 28, tintColor: focused ? '#fff' : '#A0A0A0' }} />
+                                    </View>
+                                ),
+                            }} />
+                            <Tab.Screen name="Premium" component={PremiumScreen} options={{
+                                tabBarIcon: ({focused}) => (
+                                    <View>
+                                        <Image source={require('./assets/icons/gem.png')} style={{ width: 28, height: 28, tintColor: focused ? '#fff' : '#A0A0A0' }} />
+                                    </View>
+                                ),
+                            }} />
+                            <Tab.Screen name="Home" component={HomeScreen} options={{
+                                tabBarIcon: ({focused}) => (
+                                    <View>
+                                        <Image source={require('./assets/icons/discover.png')} style={{ width: 28, height: 28, tintColor: focused ? '#fff' : '#A0A0A0'  }} />
+                                    </View>
+                                ),
+                            }} />
+                            <Tab.Screen name="Like" component={LikeScreen} options={{
+                                tabBarIcon: ({focused}) => (
+                                    <View>
+                                        <Image source={require('./assets/icons/heart.png')} style={{ width: 28, height: 28, tintColor: focused ? '#fff' : '#A0A0A0'  }} />
+                                    </View>
+                                ),
+                            }} />
+                            <Tab.Screen name="Chat" component={ChatScreen} options={{
+                                tabBarIcon: ({focused}) => (
+                                    <View>
+                                        <Image source={require('./assets/icons/chat.png')} style={{ width: 28, height: 28, tintColor: focused ? '#fff' : '#A0A0A0'  }} />
+                                    </View>
+                                ),
+                            }} />
+                        </Tab.Navigator>
+                    )}
+                </Stack.Screen>
+            ) : (
+                <Stack.Screen name="Login" component={LoginScreen} />
+            )}
+        </Stack.Navigator>
+    );
 }

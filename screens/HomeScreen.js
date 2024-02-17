@@ -1,15 +1,16 @@
-import { PanResponder, View, Animated, Dimensions, StatusBar, Text } from 'react-native';
+import { PanResponder, View, Animated, Dimensions, StatusBar, Text, TouchableOpacity } from 'react-native';
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { users as usersArray } from "../utils/data";
 import Card from '../components/home/Card';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font';
-
+import { AdjustmentsHorizontalIcon as Filter } from "react-native-heroicons/outline";
+import LastCard from '../components/home/LastCard';
 
 const { width, height } = Dimensions.get("screen");
 
 export default function HomeScreen() {
-    
+
 
     // State to hold the users data
     const [users, setUsers] = useState(usersArray);
@@ -18,12 +19,12 @@ export default function HomeScreen() {
     const swipe = useRef(new Animated.ValueXY()).current;
     const titlSign = useRef(new Animated.Value(1)).current;
 
-    useEffect(() => {
-        // Reset users data if the array is empty
-        if (!users.length) {
-            setUsers(usersArray);
-        }
-    }, [users.length])
+    // useEffect(() => {
+    //     // Reset users data if the array is empty
+    //     if (!users.length) {
+    //         setUsers(usersArray);
+    //     }
+    // }, [users.length])
 
     // PanResponder configuration
     const panResponder = PanResponder.create({
@@ -32,9 +33,13 @@ export default function HomeScreen() {
             const dx = gestureState.dx;
 
             // Only allow the pan responder to activate if the user swipes in the x-direction with a force greater than 10 pixels
-            if (Math.abs(dx) > 10) {
+            if (Math.abs(dx) > 5) {
                 return true;
-            } else {
+            }
+            else if (!users.length) {
+                return false;
+            }
+            else {
                 return false;
             }
         },
@@ -47,7 +52,7 @@ export default function HomeScreen() {
 
         onPanResponderStart: (event, gestureState) => {
             // Check the value of the `dx` property
-            if (Math.abs(gestureState.dx) > 10) {
+            if (Math.abs(gestureState.dx) > 3) {
                 // Start the animation
                 Animated.timing(swipe, {
                     toValue: {
@@ -122,39 +127,41 @@ export default function HomeScreen() {
                 <StatusBar backgroundColor="#DCADAD" barStyle="dark-content" />
 
                 {/* Header */}
-                <View style={{ marginTop: 10, marginBottom: -10,}}>
+                <View style={{ marginVertical: 10, flexDirection: 'row', alignItems: 'center', width: '100%', justifyContent: 'center' }}>
                     <Text
                         style={{ fontFamily: 'Italiana', color: '#000', fontSize: 30 }}>
                         Aroma
                     </Text>
+                    <TouchableOpacity style={{ position: 'absolute', right: 20, alignItems: 'center', justifyContent: 'center' }}>
+                        <View style={{ width: 40, height: 40, borderRadius: 50, backgroundColor: '#A47879', position: 'absolute', right: -5 }}></View>
+                        <Filter size={30} color="#ECECEC" />
+                    </TouchableOpacity>
                 </View>
 
-                <View style={{ flex: 1, alignItems: "center", borderRadius: 20}}>
+                {!users.length ? (
+                    <LastCard />
+                ) : (
+                    // Map users array to render cards
+                    users.map(({ name, image, location, distance, age }, index) => {
+                        const isFirst = index == 0;
+                        const dragHandlers = isFirst ? panResponder.panHandlers : {};
 
-                    {/* Map through users and render Card components */}
-                    {
-                        users.map(({ name, image, location, distance, age }, index) => {
-                            const isFirst = index == 0;
-                            const dragHandlers = isFirst ? panResponder.panHandlers : {};
-
-                            return (
-                                <Card
-                                    key={name}
-                                    name={name}
-                                    location={location}
-                                    distance={distance}
-                                    age={age}
-                                    image={image}
-                                    isFirst={isFirst}
-                                    swipe={swipe}
-                                    titlSign={titlSign}
-                                    {...dragHandlers}
-                                />
-                            )
-                        }).reverse()
-                    }
-                </View>
-
+                        return (
+                            <Card
+                                key={name}
+                                name={name}
+                                location={location}
+                                distance={distance}
+                                age={age}
+                                image={image}
+                                isFirst={isFirst}
+                                swipe={swipe}
+                                titlSign={titlSign}
+                                {...dragHandlers}
+                            />
+                        )
+                    }).reverse()
+                )}
             </View>
         </SafeAreaView>
     );
