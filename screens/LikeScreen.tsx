@@ -1,4 +1,4 @@
-import { PanResponder, View, Animated, Dimensions, StatusBar, Text, TouchableOpacity, ScrollView, Image, FlatList } from 'react-native';
+import { PanResponder, View, Animated, Dimensions, StatusBar, Text, TouchableOpacity, ScrollView, Image, FlatList, Platform } from 'react-native';
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { users as usersArray } from "../utils/data";
 import Card from '../components/home/Card';
@@ -6,133 +6,48 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font';
 import { AdjustmentsHorizontalIcon as Filter } from "react-native-heroicons/outline";
 import { Fonts } from '../fonts';
+import Loader from '../Loader';
 
 const { width, height } = Dimensions.get("screen");
 
 export default function HomeScreen() {
   // Load fonts
-  let [fontsLoaded] = useFonts({
-    'Italiana': require('../assets/fonts/Italiana.ttf'),
-  });
+  // let [fontsLoaded] = useFonts({
+  //   'Italiana': require('../assets/fonts/Italiana.ttf'),
+  // });
 
-  if (!fontsLoaded) {
-    return null;
-  }
+  // if (!fontsLoaded) {
+  //   return null;
+  // }
 
-  // State to hold the users data
-  const [users, setUsers] = useState(usersArray);
-  const numberOfProposals = 3;
+  const numberOfProposals = 4;
+  const numberOfLikes = 3;
 
+  // Proposals
+  // On press, push the user's id at the top of discovery stack and navigate to home
   const renderImage = (index) => (
     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 14 }}>
       <TouchableOpacity activeOpacity={0.4}>
-        <Image source={require('../assets/images/proposal.png')} style={{ width: 150, height: 216, marginVertical: 15, }} />
+        <Image source={require('../assets/images/proposal.png')} style={{ width: 150, height: 216, marginTop: 15, borderRadius: 10 }} />
+      </TouchableOpacity>
+    </View>
+  );
+  // Likes
+  const renderLikeImage = (index) => (
+    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 14 }}>
+      <TouchableOpacity activeOpacity={0.4}>
+        <Image source={require('../assets/images/likeScreen.png')} style={{ width: 150, height: 216, marginTop: 15, borderRadius: 10 }} />
       </TouchableOpacity>
     </View>
   );
 
-  // Animated values for swipe and tilt
-  // const swipe = useRef(new Animated.ValueXY()).current;
-  // const titlSign = useRef(new Animated.Value(1)).current;
-
-  // useEffect(() => {
-  //     // Reset users data if the array is empty
-  //     if (!users.length) {
-  //         setUsers(usersArray);
-  //     }
-  // }, [users.length])
-
-  // PanResponder configuration
-  // const panResponder = PanResponder.create({
-  //     // Allow pan responder to activate
-  //     onMoveShouldSetPanResponder: (event, gestureState) => {
-  //         const dx = gestureState.dx;
-
-  //         // Only allow the pan responder to activate if the user swipes in the x-direction with a force greater than 10 pixels
-  //         if (Math.abs(dx) > 5) {
-  //             return true;
-  //         }
-  //         else if (!users.length) {
-  //             return false;
-  //         }
-  //         else {
-  //             return false;
-  //         }
-  //     },
-
-  //     // Handle card movement while dragging
-  //     onPanResponderMove: (_, { dx, dy, y0 }) => {
-  //         swipe.setValue({ x: dx, y: 0 });
-  //         // titlSign.setValue(y0 > (height * 0.9) / 2 ? 1 : -1)
-  //     },
-
-  //     onPanResponderStart: (event, gestureState) => {
-  //         // Check the value of the `dx` property
-  //         if (Math.abs(gestureState.dx) > 3) {
-  //             // Start the animation
-  //             Animated.timing(swipe, {
-  //                 toValue: {
-  //                     x: gestureState.dx * 500,
-  //                     y: 0
-  //                 },
-  //                 duration: 100,
-  //                 useNativeDriver: true
-  //             }).start();
-  //         }
-  //     },
-
-  //     // Handle card release after dragging
-  //     onPanResponderRelease: (_, { dx, dy }) => {
-  //         const direction = Math.sign(dx);
-  //         const isActionActive = Math.abs(dx) > 100;
-
-  //         if (isActionActive) {
-  //             // Swipe the card off the screen
-  //             Animated.timing(swipe, {
-  //                 duration: 100,
-  //                 toValue: {
-  //                     x: direction * 500,
-  //                     y: dy
-  //                 },
-  //                 useNativeDriver: true
-  //             }).start(removeTopCard);
-
-  //         } else {
-  //             // Return the card to its original position
-  //             Animated.spring(swipe, {
-  //                 toValue: {
-  //                     x: 0,
-  //                     y: 0
-  //                 },
-  //                 useNativeDriver: true,
-  //                 friction: 5
-  //             }).start()
-  //         }
-  //     }
-  // })
-
-  // // remove the top card from the users array
-  // const removeTopCard = useCallback(() => {
-  //     setUsers((prevState) => prevState.slice(1));
-  //     swipe.setValue({ x: 0, y: 0 });
-  // }, [swipe]);
-
-  // // handle user choice (left or right swipe)
-  // const handleChoice = useCallback((direction) => {
-  //     Animated.timing(swipe.x, {
-  //         toValue: direction * 500,
-  //         duration: 400,
-  //         useNativeDriver: true
-  //     }).start(removeTopCard);
-
-  // }, [removeTopCard, swipe.x]);
-
   const data = Array.from({ length: numberOfProposals }, (_, index) => ({ key: index.toString() }));
+  const Ldata = Array.from({ length: numberOfLikes }, (_, index) => ({ key: index.toString() }));
 
   // Load fonts
   const [fontLoaded] = Fonts();
   if (!fontLoaded) {
-    return null;
+    return <Loader />;
   }
 
   return (
@@ -159,20 +74,54 @@ export default function HomeScreen() {
           <Text style={{ fontFamily: 'Poppins_600SemiBold', color: '#fff', fontSize: 12, textAlign: 'center' }}>Upgrade to Premium to find more matches</Text>
         </View>
 
-        {/* Cards */}
-        {/* <ScrollView showsVerticalScrollIndicator={false}> */}
         <View style={{ width: width * 0.9, borderRadius: 20, backgroundColor: '#fff', height: height * 0.7, }}>
-          <Text style={{ fontFamily: 'Poppins_600SemiBold', color: '#C08484', fontSize: 12, margin: 20, marginBottom: 0 }}>({numberOfProposals}·)</Text>
 
-          {/* Proposal List */}
-          <FlatList
-            data={data}
-            renderItem={({ item }) => renderImage(Array.from({ length: numberOfProposals }, (_, index) => index))}
-            keyExtractor={(item) => item.key}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-          />
+          {/* Proposal Cards */}
+          {numberOfProposals > 0 && (
+            <>
+              <Text style={{ fontFamily: 'Poppins_600SemiBold', color: '#C08484', fontSize: 12, margin: 20, marginBottom: 0 }}>{numberOfProposals} · Proposals</Text>
+              <FlatList
+                data={data}
+                renderItem={({ item }) => renderImage(Array.from({ length: numberOfProposals }, (_, index) => index))}
+                keyExtractor={(item) => item.key}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+              />
+            </>
+          )}
 
+          {/* Like Cards */}
+          {numberOfLikes > 0 && (
+            <>
+              <Text style={{ fontFamily: 'Poppins_600SemiBold', color: '#C08484', fontSize: 12, marginHorizontal: 20, marginTop: numberOfProposals > 0 ? -10 : 20 }}>{numberOfLikes} · Likes</Text>
+              <FlatList
+                data={Ldata}
+                renderItem={({ item }) => renderLikeImage(Array.from({ length: numberOfLikes }, (_, index) => index))}
+                keyExtractor={(item) => item.key}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+
+              />
+            </>
+          )}
+
+
+          {/* No Likes Prompt */}
+          {numberOfLikes < 1 && numberOfProposals < 1 && (
+            <View>
+              <Text style={{color: '#000', fontFamily: 'Poppins_700Bold', fontSize: 18, textAlign: 'center', marginTop: 200}}>No Proposals or Likes... yet!</Text>
+            </View>
+          )}
+
+
+            {/* Get More Swipes Button */}
+            {(numberOfLikes < 1 || numberOfProposals < 1) && (
+          <View style={{ flex: 1, width: '100%', alignItems: 'center', justifyContent: 'center' }}>
+            <TouchableOpacity activeOpacity={0.4}>
+              <Text style={{ backgroundColor: '#8FCDBB', padding: 20, paddingVertical: 10, color: '#fff', fontFamily: 'Poppins_700Bold', fontSize: 18, marginTop: -26,  borderRadius: Platform.OS === 'ios' ? 20 : 30, overflow: 'hidden' }}>Get More Swipes</Text>
+            </TouchableOpacity>
+          </View>
+          )}
 
         </View>
 

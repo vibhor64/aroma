@@ -1,13 +1,22 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 export type HomeStackNavigatorParamList = {
-  Home: undefined;
+  Welcome: undefined;
   Login: undefined;
+  OtpScreen: undefined;
+  NameScreen: undefined;
+  Images: undefined;
+  Traits: undefined;
+  Interests: undefined;
+  Prompts: undefined;
+  Outlook: undefined;
+  Home: undefined;
   Profile: undefined;
   Main: undefined;
   Like: undefined;
   Chat: undefined;
   Premium: undefined;
+  Chatting: undefined;
 };
 
 export type HomeScreenNavigationProp = NativeStackScreenProps<

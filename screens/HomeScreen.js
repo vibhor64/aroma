@@ -6,11 +6,18 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font';
 import { AdjustmentsHorizontalIcon as Filter } from "react-native-heroicons/outline";
 import LastCard from '../components/home/LastCard';
+import Loader from '../Loader';
+import Matched from '../components/home/Matched';
 
 const { width, height } = Dimensions.get("screen");
 
 export default function HomeScreen() {
 
+    const [isModalVisible, setModalVisible] = useState(false);
+
+    const toggleModal = () => {
+      setModalVisible(!isModalVisible);
+    };
 
     // State to hold the users data
     const [users, setUsers] = useState(usersArray);
@@ -33,7 +40,7 @@ export default function HomeScreen() {
             const dx = gestureState.dx;
 
             // Only allow the pan responder to activate if the user swipes in the x-direction with a force greater than 10 pixels
-            if (Math.abs(dx) > 5) {
+            if (Math.abs(dx) > 10) {
                 return true;
             }
             else if (!users.length) {
@@ -117,7 +124,7 @@ export default function HomeScreen() {
     });
 
     if (!fontsLoaded) {
-        return null;
+        return <Loader />;
     }
 
     return (
@@ -132,7 +139,8 @@ export default function HomeScreen() {
                         style={{ fontFamily: 'Italiana', color: '#000', fontSize: 30 }}>
                         Aroma
                     </Text>
-                    <TouchableOpacity style={{ position: 'absolute', right: 20, alignItems: 'center', justifyContent: 'center' }}>
+                    <TouchableOpacity style={{ position: 'absolute', right: 20, alignItems: 'center', justifyContent: 'center' }}
+                    onPress={toggleModal}>
                         <View style={{ width: 40, height: 40, borderRadius: 50, backgroundColor: '#A47879', position: 'absolute', right: -5 }}></View>
                         <Filter size={30} color="#ECECEC" />
                     </TouchableOpacity>
@@ -162,6 +170,7 @@ export default function HomeScreen() {
                         )
                     }).reverse()
                 )}
+                <Matched isVisible={isModalVisible} closeModal={toggleModal} />
             </View>
         </SafeAreaView>
     );

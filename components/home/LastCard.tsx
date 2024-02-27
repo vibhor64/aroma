@@ -1,42 +1,45 @@
-import { View , Text, Image, StyleSheet, Dimensions, Animated, ScrollView, PanResponder, TouchableOpacity } from "react-native";
+import { View, Text, Image, StyleSheet, Dimensions, Animated, ScrollView, PanResponder, TouchableOpacity } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
-const { width , height } = Dimensions.get("screen");
+const { width, height } = Dimensions.get("screen");
 import { Fragment, useCallback } from "react";
 import { Fonts } from '../../fonts';
 import Loader from "../../Loader";
 
-const LastCard = ()=>{
+const LastCard = () => {
     const [fontsLoaded] = Fonts();
     if (!fontsLoaded) {
         return null;
     }
 
     return (
-        <Animated.View 
-        style={[ styles.container]}>
-            <View style={{flex: 1, borderRadius: 20, backgroundColor: 'white'}}>
+        <Animated.View
+            style={[styles.container]}>
+            <View style={{ flex: 1, borderRadius: 20, backgroundColor: 'white' }}>
 
-                <View style={{width: width * 0.9, height: height * 0.78,  backgroundColor: 'white', alignItems: 'center', justifyContent: 'center', borderRadius: 20}}>
-                    <Text style={{fontSize: 18, fontFamily: 'Poppins_700Bold'}}>
+                <View style={{ width: width * 0.9, height: height * 0.78, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center', borderRadius: 20 }}>
+                    <Text style={{ fontSize: 18, fontFamily: 'Poppins_700Bold' }}>
                         You finished all the profiles!
                     </Text>
-                    <Text style={{fontSize: 80}}>😂</Text>
-                    <Text style={{fontSize: 12, fontFamily: 'Poppins_500Medium', marginTop: 20}}>
+                    <Text style={{ fontSize: 80 }}>😂</Text>
+                    <Text style={{ fontSize: 12, fontFamily: 'Poppins_500Medium', marginTop: 20 }}>
                         Come back tomorrow for more!
                     </Text>
-                    
-                {/* <Image source={{uri: 'https://images.unsplash.com/photo-1628260412297-a3377e45006f?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'}} style={styles.image} /> */}
-               
+                    <View style={{ alignItems: 'center' }}>
+                        <TouchableOpacity>
+                            <Text style={{ fontFamily: 'Poppins_700Bold', color: '#fff', fontSize: 14, marginTop: 40, backgroundColor: '#E42828', padding: 10, borderRadius: 30, paddingHorizontal: 20 }}>Or Get More Swipes</Text>
+                        </TouchableOpacity>
+                    </View>
+
                 </View>
 
-            
+
             </View>
         </Animated.View>
     )
 }
 
 const styles = StyleSheet.create({
-    container:{
+    container: {
         position: "absolute",
         top: 70,
         borderRadius: 20,
@@ -58,9 +61,9 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         height: 200,
-        borderRadius:  20
+        borderRadius: 20
     },
-    userContainer:{
+    userContainer: {
         position: "absolute",
         bottom: 24,
         left: 24
@@ -81,16 +84,16 @@ const styles = StyleSheet.create({
         fontWeight: "300"
     },
     choiceContainer: {
-       position: 'absolute',
-       top: 100
+        position: 'absolute',
+        top: 100
     },
-    likeContainer:{
-      left: 45,
-      transform: [{ rotate: '-30deg' }]
+    likeContainer: {
+        left: 45,
+        transform: [{ rotate: '-30deg' }]
     },
-    nopeContainer:{
-      right: 45,
-      transform: [{ rotate: '30deg' }]
+    nopeContainer: {
+        right: 45,
+        transform: [{ rotate: '30deg' }]
     },
 })
 
